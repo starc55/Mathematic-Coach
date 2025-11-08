@@ -1,10 +1,11 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { getSocraticResponse } from './services/geminiService';
 import type { ChatMessage, SavedSession } from './types';
 import { ChatBubble } from './components/ChatBubble';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ImageUpload } from './components/ImageUpload';
-import { SendIcon, SparklesIcon, PlusIcon, SaveIcon, FolderIcon, BookOpenIcon, LightBulbIcon } from './components/Icons';
+import { SendIcon, SparklesIcon, PlusIcon, SaveIcon, FolderIcon, BookOpenIcon, LightBulbIcon, BrainIcon } from './components/Icons';
 import { LoadSessionModal } from './components/LoadSessionModal';
 import { PracticeProblems } from './components/PracticeProblems';
 import type { PracticeProblem } from './data/practiceProblems';
@@ -94,9 +95,11 @@ const App: React.FC = () => {
     setChatHistory(historySoFar);
     setView('chat');
 
+    const thinkingModeForThisRequest = isThinkingMode;
+
     try {
-      const response = await getSocraticResponse(promptForApi, historySoFar, isThinkingMode);
-      setChatHistory(prev => [...prev, { role: 'model', content: response }]);
+      const response = await getSocraticResponse(promptForApi, historySoFar, thinkingModeForThisRequest);
+      setChatHistory(prev => [...prev, { role: 'model', content: response, wasThinking: thinkingModeForThisRequest }]);
     } catch (err) {
       const errorMessage = (err as Error).message || 'An unknown error occurred while starting the session.';
       setError(errorMessage);
@@ -153,10 +156,12 @@ const App: React.FC = () => {
     setChatHistory([...currentChatHistory, newUserMessage]);
     setIsLoading(true);
     setError(null);
+    
+    const thinkingModeForThisRequest = isThinkingMode;
 
     try {
-      const response = await getSocraticResponse(messageText, currentChatHistory, isThinkingMode);
-      setChatHistory(prev => [...prev, { role: 'model', content: response }]);
+      const response = await getSocraticResponse(messageText, currentChatHistory, thinkingModeForThisRequest);
+      setChatHistory(prev => [...prev, { role: 'model', content: response, wasThinking: thinkingModeForThisRequest }]);
     } catch (err) {
       const errorMessage = (err as Error).message || 'An unknown error occurred.';
       setError(errorMessage);
@@ -229,7 +234,7 @@ const App: React.FC = () => {
   };
 
   const renderWelcomeView = () => (
-    <div className="text-center p-8 bg-white/5 backdrop-blur-md rounded-2xl shadow-lg border border-white/10 max-w-2xl mx-auto">
+    <div className="text-center p-4 sm:p-8 bg-white/5 backdrop-blur-md rounded-2xl shadow-lg border border-white/10 w-full max-w-2xl mx-auto">
         <SparklesIcon className="w-16 h-16 mx-auto text-slate-300 mb-4" />
         <h2 className="text-3xl font-light mb-2 text-white">Welcome!</h2>
         <p className="text-slate-400 mb-8">Ready to tackle a math problem? Choose an option to get started.</p>
@@ -283,14 +288,12 @@ const App: React.FC = () => {
         onDelete={handleDeleteSession}
       />
       <header className="bg-black/20 backdrop-blur-lg border-b border-white/10 shadow-lg p-4 flex justify-between items-center z-10 sticky top-0">
-        <h1 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400">
           Socratic Math Tutor
         </h1>
-        <div className="flex items-center space-x-2 md:space-x-4">
-            <div className="flex items-center space-x-2">
-              <label htmlFor="thinking-mode" className="text-sm font-medium text-slate-300 hidden sm:block">
-                Thinking
-              </label>
+        <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4">
+            <div className="flex items-center space-x-2" title={`Thinking Mode is ${isThinkingMode ? 'ON' : 'OFF'}. This uses a more powerful model for complex problems.`}>
+              <BrainIcon className={`w-6 h-6 transition-colors duration-300 ${isThinkingMode ? 'text-slate-300 thinking-glow' : 'text-slate-500'}`} />
               <button
                 onClick={() => setIsThinkingMode(!isThinkingMode)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isThinkingMode ? 'bg-slate-400' : 'bg-slate-600'}`}
@@ -354,7 +357,7 @@ const App: React.FC = () => {
                 </button>
               ))}
             </div>
-            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex items-center space-x-4">
+            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex items-center space-x-2 sm:space-x-4">
             <input
                 type="text"
                 value={userInput}

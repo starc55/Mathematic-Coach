@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { practiceTopics, PracticeProblem } from '../data/practiceProblems';
 import { ContentRenderer } from './ContentRenderer';
@@ -12,17 +13,22 @@ interface PracticeProblemsProps {
 export const PracticeProblems: React.FC<PracticeProblemsProps> = ({ onSelectProblem, onBack, completedProblemIds }) => {
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6">
-      <div className="relative mb-6 text-center">
+      <div className="flex items-center mb-2">
         <button 
           onClick={onBack} 
-          className="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-slate-400 hover:bg-white/10"
+          className="p-2 rounded-full text-slate-400 hover:bg-white/10"
           aria-label="Go back to welcome screen"
         >
           <ChevronLeftIcon className="w-6 h-6" />
         </button>
-        <h2 className="text-3xl font-light text-white">Practice Problems</h2>
-        <p className="text-slate-400 mt-2">Select a topic to test your knowledge.</p>
+        <div className="flex-1 text-center">
+            <h2 className="text-3xl font-light text-white">Practice Problems</h2>
+        </div>
+        {/* Spacer to keep title perfectly centered */}
+        <div className="w-10 h-10"></div>
       </div>
+      <p className="text-slate-400 text-center mb-6">Select a topic to test your knowledge.</p>
+
 
       <div className="space-y-8">
         {practiceTopics.map((topic) => {

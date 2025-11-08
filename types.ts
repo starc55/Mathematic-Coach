@@ -3,6 +3,7 @@ export interface ChatMessage {
   role: 'user' | 'model';
   content: string;
   image?: string;
+  wasThinking?: boolean;
 }
 
 export interface SavedSession {

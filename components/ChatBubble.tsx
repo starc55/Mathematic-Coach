@@ -1,7 +1,8 @@
+
 import React, { useState, useRef } from 'react';
 import type { ChatMessage } from '../types';
 import { ContentRenderer } from './ContentRenderer';
-import { ShareIcon, CheckIcon, SpeakerWaveIcon, StopIcon } from './Icons';
+import { ShareIcon, CheckIcon, SpeakerWaveIcon, StopIcon, BrainIcon } from './Icons';
 import { LoadingSpinner } from './LoadingSpinner';
 import { getTextToSpeechAudio } from '../services/geminiService';
 
@@ -151,18 +152,24 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
           </>
         )}
       </div>
-
-      <div className={`max-w-xl p-4 border border-white/10 backdrop-blur-md shadow-lg ${bubbleClasses}`}>
-        {message.image && (
-          <div className="mb-2">
-            <img 
-              src={message.image} 
-              alt="Math problem uploaded by user" 
-              className="rounded-lg max-w-full h-auto"
-            />
-          </div>
+      <div className="relative">
+        {!isUser && message.wasThinking && (
+            <div className="absolute -top-3 -left-3 z-10" title="Generated with Thinking Mode">
+                <BrainIcon className="w-6 h-6 p-1 bg-slate-700/80 backdrop-blur-md text-slate-300 rounded-full border border-white/10" />
+            </div>
         )}
-        {message.content && <ContentRenderer content={message.content} />}
+        <div className={`max-w-[90%] sm:max-w-xl p-4 border border-white/10 backdrop-blur-md shadow-lg ${bubbleClasses}`}>
+            {message.image && (
+            <div className="mb-2">
+                <img 
+                src={message.image} 
+                alt="Math problem uploaded by user" 
+                className="rounded-lg max-w-full h-auto"
+                />
+            </div>
+            )}
+            {message.content && <ContentRenderer content={message.content} />}
+        </div>
       </div>
     </div>
   );

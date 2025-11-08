@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Socratic Math Tutor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes subtle-glow {
+        0%, 100% { filter: drop-shadow(0 0 1px rgba(203, 213, 225, 0.4)); }
+        50% { filter: drop-shadow(0 0 4px rgba(203, 213, 225, 0.7)); }
+      }
+      .thinking-glow {
+        animation: subtle-glow 2.5s ease-in-out infinite;
+      }
+    </style>
     <script>
       window.MathJax = {
         tex: {
