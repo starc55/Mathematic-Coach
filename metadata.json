@@ -1,0 +1,5 @@
+{
+  "name": "Socratic Math Tutor",
+  "description": "An AI-powered math tutor that helps you understand complex calculus and algebra problems step-by-step. Upload a photo of a problem, and our compassionate AI will guide you through the solution using the Socratic method, focusing on understanding over answers.",
+  "requestFramePermissions": []
+}
